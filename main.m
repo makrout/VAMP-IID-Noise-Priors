@@ -65,7 +65,8 @@ snr = 10*log10(norm(A*x)^2/norm(w)^2);
 [x_est_VAMP, nrmses] = VampNoiseIID(A, y, x, prior_x, prior_w, Nbr_iter, damp);
 
 if strcmp(prior_x.name, 'binary')
-    x_est_VAMP = round(x_est_VAMP);
+    % round the estimated x to the closest values in the support of x: {-1,1}
+    x_est_VAMP = interp1([-1,1],[-1,1],x_est_VAMP,'nearest','extrap');
 end
 nrmse = sqrt(mean((A*x - A*x_est_VAMP).^2/mean((A*x).^2), 'all'));
 fprintf(1,'\n Final nrmse = %f \n', nrmse);
